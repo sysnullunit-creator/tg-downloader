@@ -1,0 +1,20 @@
+[project]
+name = "tg-downloader"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "An Paranoid", email = "annnparanoid@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "aiogram>=3.31.0",
+    "python-dotenv>=1.2.4",
+]
+
+[project.scripts]
+tg-downloader = "tg_downloader:main"
+
+[build-system]
+requires = ["uv_build>=0.13.5,<0.14.0"]
+build-backend = "uv_build"
