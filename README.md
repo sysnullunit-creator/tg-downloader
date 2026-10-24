@@ -80,6 +80,25 @@ To run the bot in an isolated Docker container with automated restarts:
    docker compose down
    ```
 
+### Automated CD with GitHub Self-Hosted Runner
+
+To automatically deploy new releases on every push/merge to `main`:
+
+1. On GitHub, navigate to **Settings** ➡️ **Actions** ➡️ **Runners** ➡️ **New self-hosted runner**.
+2. Select **Linux** and your architecture (**ARM64** for Raspberry Pi / Oracle Ampere).
+3. Follow GitHub's instructions to install the runner on the host.
+4. Give the runner user permissions to run Docker:
+   ```bash
+   sudo usermod -aG docker $USER
+   ```
+5. Install and start the runner as a background systemd service:
+   ```bash
+   sudo ./svc.sh install
+   sudo ./svc.sh start
+   ```
+
+Now every push to `main` will automatically trigger `.github/workflows/deploy.yml` and deploy the updated containers.
+
 ## Getting a Bot Token
 
 1. Open Telegram and find `@BotFather`
