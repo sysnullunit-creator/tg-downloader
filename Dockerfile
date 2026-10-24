@@ -26,10 +26,8 @@ COPY pyproject.toml uv.lock ./
 # Install project dependencies without dev packages
 RUN uv sync --frozen --no-dev --no-install-project
 
-# Copy project source files
-COPY config.py bot.py services.py README.md ./
-COPY middlewares/ ./middlewares/
-COPY src/ ./src/
+# Copy the rest of the project source code
+COPY . .
 
 # Install the project itself
 RUN uv sync --frozen --no-dev
