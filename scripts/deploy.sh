@@ -9,11 +9,6 @@ echo "==> [CD] Pulling latest changes from origin/main..."
 git fetch origin main
 git reset --hard origin/main
 
-echo "==> [CD] Ensuring secure permissions for .env..."
-if [ -f .env ]; then
-    chmod 600 .env
-fi
-
 echo "==> [CD] Building and restarting Docker containers..."
 docker compose build --pull
 docker compose up -d --remove-orphans
