@@ -50,6 +50,36 @@ A Telegram bot for downloading videos
    python bot.py
    ```
 
+## Docker Deployment
+
+To run the bot in an isolated Docker container with automated restarts:
+
+1. Create and configure `.env`:
+
+   ```bash
+   cp .env.example .env
+   # Edit .env with your BOT_TOKEN
+   chmod 600 .env
+   ```
+
+2. Start the container with Docker Compose:
+
+   ```bash
+   docker compose up -d --build
+   ```
+
+3. View live logs:
+
+   ```bash
+   docker compose logs -f
+   ```
+
+4. Stop the container:
+
+   ```bash
+   docker compose down
+   ```
+
 ## Getting a Bot Token
 
 1. Open Telegram and find `@BotFather`
