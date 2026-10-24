@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from unittest.mock import AsyncMock
 
 import pytest
@@ -37,7 +38,8 @@ async def test_middleware_authorized_private_message():
 
     user = User(id=7177930122, is_bot=False, first_name="Admin", username="admin_user")
     chat = Chat(id=7177930122, type="private")
-    message = Message(message_id=1, date=None, chat=chat, from_user=user)
+    now = datetime.now(UTC)
+    message = Message(message_id=1, date=now, chat=chat, from_user=user)
 
     handler = AsyncMock(return_value="handler_executed")
     data = {}
@@ -59,7 +61,8 @@ async def test_middleware_authorized_group_message():
 
     user = User(id=999999, is_bot=False, first_name="RegularMember")
     chat = Chat(id=-1002366722481, type="supergroup", title="Target Group")
-    message = Message(message_id=2, date=None, chat=chat, from_user=user)
+    now = datetime.now(UTC)
+    message = Message(message_id=2, date=now, chat=chat, from_user=user)
 
     handler = AsyncMock(return_value="group_ok")
     data = {}
@@ -80,7 +83,8 @@ async def test_middleware_unauthorized_message_dropped():
 
     unauthorized_chat = Chat(id=999111222, type="private")
     user = User(id=999111222, is_bot=False, first_name="Intruder")
-    message = Message(message_id=3, date=None, chat=unauthorized_chat, from_user=user)
+    now = datetime.now(UTC)
+    message = Message(message_id=3, date=now, chat=unauthorized_chat, from_user=user)
 
     handler = AsyncMock()
     data = {}
@@ -98,7 +102,8 @@ async def test_middleware_authorized_callback_query():
     middleware = WhitelistMiddleware(allowed_ids, admin_ids)
 
     chat = Chat(id=-1002366722481, type="supergroup", title="Target Group")
-    message = Message(message_id=4, date=None, chat=chat)
+    now = datetime.now(UTC)
+    message = Message(message_id=4, date=now, chat=chat)
     user = User(id=7177930122, is_bot=False, first_name="Admin")
     callback = CallbackQuery(id="cb1", from_user=user, chat_instance="inst1", message=message)
 
@@ -119,7 +124,8 @@ async def test_middleware_unauthorized_callback_query():
     middleware = WhitelistMiddleware(allowed_ids)
 
     chat = Chat(id=555555, type="private")
-    message = Message(message_id=5, date=None, chat=chat)
+    now = datetime.now(UTC)
+    message = Message(message_id=5, date=now, chat=chat)
     user = User(id=555555, is_bot=False, first_name="Stranger")
     callback = CallbackQuery(id="cb2", from_user=user, chat_instance="inst2", message=message)
 
