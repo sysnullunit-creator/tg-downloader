@@ -36,4 +36,11 @@ jobs:
         run: docker image prune -f
 
       - name: Verify container health
-        run: docker compose ps
+        run: |
+          sleep 3
+          docker compose ps
+          if docker compose ps | grep -iE "exit|restarting"; then
+            echo "Error: Container crashed on startup!"
+            docker compose logs --tail 50
+            exit 1
+          fi
