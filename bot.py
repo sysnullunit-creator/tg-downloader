@@ -1,39 +1,55 @@
 import asyncio
 import logging
-import os
 
 from aiogram import Bot, Dispatcher
 from aiogram.filters import CommandStart
 from aiogram.types import Message
-from dotenv import load_dotenv
 
-# Загружаем переменные из .env
-load_dotenv()
+from config import load_config
+from middlewares import WhitelistMiddleware
 
-# Проверяем, что токен есть
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-if not BOT_TOKEN:
-    raise ValueError("BOT_TOKEN не найден в .env")
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
+)
+logger = logging.getLogger(__name__)
 
-# Включаем логирование, чтобы видеть, что происходит
-logging.basicConfig(level=logging.INFO)
+# Load and validate configuration
+config = load_config()
 
-# Создаем диспетчер — он будет распределять сообщения по обработчикам
+# Initialize dispatcher
 dp = Dispatcher()
+
+# Register WhitelistMiddleware at the outer layer
+dp.message.outer_middleware(
+    WhitelistMiddleware(
+        allowed_chat_ids=config.allowed_chat_ids,
+        admin_user_ids=config.admin_user_ids,
+    )
+)
+dp.callback_query.outer_middleware(
+    WhitelistMiddleware(
+        allowed_chat_ids=config.allowed_chat_ids,
+        admin_user_ids=config.admin_user_ids,
+    )
+)
 
 
 @dp.message(CommandStart())
-async def cmd_start(message: Message):
+async def cmd_start(message: Message, is_admin: bool = False, is_private: bool = False):
+    first_name = message.from_user.first_name if message.from_user else "user"
+    status_suffix = " 👑 (Admin/Dev)" if is_admin and is_private else ""
+
     await message.answer(
-        f"Привет, {message.from_user.first_name}! 👋\n"
-        f"Я пока ничего не умею, но скоро научусь скачивать видео."
+        f"Привіт, {first_name}! 👋{status_suffix}\n"
+        f"Я бот для завантаження медіа. Надішли мені посилання на відео!"
     )
 
 
 async def main():
-    bot = Bot(token=BOT_TOKEN)
-    print("Бот запущен. Нажми Ctrl+C для остановки.")
-    # start_polling запускает бесконечный цикл получения обновлений
+    bot = Bot(token=config.bot_token)
+    logger.info("Bot successfully started. Press Ctrl+C to stop.")
     await dp.start_polling(bot)
 
 

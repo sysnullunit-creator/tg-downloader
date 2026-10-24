@@ -10,7 +10,7 @@ A Telegram bot for downloading videos
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/sysnullunit-creator/tg-downloader.git
+   git clone https://github.com/tmwrk34/tg-downloader.git
    cd tg-downloader
    ```
 
