@@ -13,5 +13,5 @@ def get_domain_from_url(url: str) -> str | None:
         return None
     if parsed.scheme not in ("http", "https"):
         return None
-    domain_parts = parsed.netloc.removeprefix("www.").split(':')[0].lower()
+    domain_parts = parsed.netloc.removeprefix("www.").split(":")[0].lower()
     return domain_parts

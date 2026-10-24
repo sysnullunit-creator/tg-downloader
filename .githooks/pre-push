@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -e
+
+# Prevent invalid branch names from being pushed to remote
+CURRENT_BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null || echo "")
+
+# If detached HEAD, allow
+if [ -z "$CURRENT_BRANCH" ]; then
+    exit 0
+fi
+
+# Main protected branches
+if [[ "$CURRENT_BRANCH" =~ ^(main|master|dev|develop)$ ]]; then
+    exit 0
+fi
+
+# Branch naming convention:
+# <type>/<description> OR <type>/<issue-number>-<description>
+# Examples:
+#   feat/1-whitelist-middleware
+#   fix/42-fix-timeout
+#   refactor/cleanup-router
+BRANCH_REGEX="^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|hotfix)\/([0-9]+-)?[a-z0-9._-]+$"
+
+if ! [[ "$CURRENT_BRANCH" =~ $BRANCH_REGEX ]]; then
+    echo -e "\033[0;31m[ERROR] Invalid branch name: '$CURRENT_BRANCH'\033[0m"
+    echo ""
+    echo -e "\033[1;33mBranch names must adhere to the naming convention:\033[0m"
+    echo "  <type>/<issue-number>-<description>  OR  <type>/<description>"
+    echo ""
+    echo "Allowed types:"
+    echo "  feat, fix, docs, style, refactor, perf, test, build, ci, chore, hotfix"
+    echo ""
+    echo "Valid examples:"
+    echo "  feat/1-whitelist-middleware"
+    echo "  feat/download-pipeline"
+    echo "  fix/10-audio-extraction-error"
+    echo "  ci/github-actions-setup"
+    echo ""
+    echo "Rename your current branch with:"
+    echo "  git branch -m <valid-branch-name>"
+    echo ""
+    exit 1
+fi
+
+exit 0
+

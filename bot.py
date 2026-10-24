@@ -1,11 +1,11 @@
 import asyncio
-import os
 import logging
+import os
 
-from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher
 from aiogram.filters import CommandStart
 from aiogram.types import Message
+from dotenv import load_dotenv
 
 # Загружаем переменные из .env
 load_dotenv()

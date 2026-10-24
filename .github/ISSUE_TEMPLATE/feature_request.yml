@@ -1,0 +1,51 @@
+name: "✨ Feature Request"
+description: "Propose a new feature, architecture change, or enhancement"
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest a new feature! Please fill out the sections below.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Provide a clear and concise summary of the proposed feature.
+      placeholder: "Implement an outer middleware layer to restrict bot interactions..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why is this feature needed? What problem does it solve?
+      placeholder: "To prevent unauthorized usage of server bandwidth and compute resources..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: architecture
+    attributes:
+      label: Proposed Architecture / Technical Specification
+      description: Describe technical details, components, data flows, and design decisions.
+      placeholder: |
+        • Configuration: ...
+        • Components / Modules: ...
+        • Logging & Metrics: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: List the testable criteria that must be met for this issue to be closed.
+      placeholder: |
+        - [ ] Configuration defined and validated on startup.
+        - [ ] Feature tested with unit tests covering both positive and negative cases.
+    validations:
+      required: true
+

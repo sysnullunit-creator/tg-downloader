@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+set -e
+
+COMMIT_MSG_FILE="$1"
+COMMIT_MSG=$(head -n 1 "$COMMIT_MSG_FILE")
+
+# Allow merge commits, fixup!, squash! and revert commits
+if [[ "$COMMIT_MSG" =~ ^Merge.* ]] || [[ "$COMMIT_MSG" =~ ^(fixup|squash)! ]] || [[ "$COMMIT_MSG" =~ ^Revert\ \" ]]; then
+    exit 0
+fi
+
+# Conventional commits pattern:
+# type(scope): subject OR type: subject
+# Max header length: 72 chars
+REGEX="^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-zA-Z0-9_-]+\))?: .{1,72}$"
+
+if ! [[ "$COMMIT_MSG" =~ $REGEX ]]; then
+    echo -e "\033[0;31m[ERROR] Invalid commit message format!\033[0m"
+    echo -e "Your message: \"$COMMIT_MSG\""
+    echo ""
+    echo -e "\033[1;33mCommit messages must follow the Conventional Commits specification:\033[0m"
+    echo "  <type>(<scope>): <subject>   OR   <type>: <subject>"
+    echo ""
+    echo "Allowed types:"
+    echo "  feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert"
+    echo ""
+    echo "Examples:"
+    echo "  feat(security): implement chat ID whitelist middleware"
+    echo "  fix(downloader): resolve timeout on large video streams"
+    echo "  ci: add ruff linting and test execution workflow"
+    echo "  test(middleware): add unit tests for whitelist access"
+    echo ""
+    exit 1
+fi
+
+# Ensure subject does not end with a period
+if [[ "$COMMIT_MSG" =~ \.$ ]]; then
+    echo -e "\033[0;31m[ERROR] Commit message subject must not end with a period.\033[0m"
+    exit 1
+fi
+
+exit 0
+

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -e
+
+# Run linter and formatter checks before committing if tooling is available
+if command -v uv &>/dev/null; then
+    RUNNER="uv run"
+elif command -v ruff &>/dev/null; then
+    RUNNER=""
+else
+    # Neither uv nor ruff found in PATH
+    exit 0
+fi
+
+echo "[pre-commit] Checking code with ruff..."
+if ! $RUNNER ruff check .; then
+    echo -e "\033[0;31m[ERROR] Ruff linter found issues. Run 'uv run ruff check --fix .' to auto-fix.\033[0m"
+    exit 1
+fi
+
+echo "[pre-commit] Checking formatting with ruff format..."
+if ! $RUNNER ruff format --check .; then
+    echo -e "\033[0;31m[ERROR] Ruff formatting check failed. Run 'uv run ruff format .' to reformat code.\033[0m"
+    exit 1
+fi
+
+exit 0
+
