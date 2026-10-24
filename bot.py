@@ -1,7 +1,7 @@
 import asyncio
 import logging
 
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, F
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
@@ -42,9 +42,14 @@ async def cmd_start(message: Message, is_admin: bool = False, is_private: bool =
     status_suffix = " 👑 (Admin/Dev)" if is_admin and is_private else ""
 
     await message.answer(
-        f"Привіт, {first_name}! 👋{status_suffix}\n"
-        f"Я бот для завантаження медіа. Надішли мені посилання на відео!"
+        f"Hello, {first_name}! 👋{status_suffix}\n"
+        f"I am a media downloader bot. Send me a link to get started!"
     )
+
+
+@dp.message(F.text.casefold().in_({"ping", "пинг"}))
+async def ping_handler(message: Message):
+    await message.reply("Pong! 🏓 Alive, well, and comfortably running inside a Raspberry Pi.")
 
 
 async def main():
