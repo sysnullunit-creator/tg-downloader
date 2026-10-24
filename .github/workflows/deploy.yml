@@ -1,0 +1,28 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy Bot
+    runs-on: [self-hosted, linux]
+    concurrency:
+      group: production-deploy
+      cancel-in-progress: false
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build and start container
+        run: |
+          docker compose build --pull
+          docker compose up -d --remove-orphans
+
+      - name: Prune unused images
+        run: docker image prune -f
+
+      - name: Verify container health
+        run: docker compose ps
